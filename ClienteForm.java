@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
 /*
@@ -25,6 +26,7 @@ public class ClienteForm extends javax.swing.JFrame {
     public ClienteForm() {
         initComponents();
     }
+        DefaultListModel model = new DefaultListModel();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -76,7 +78,7 @@ public class ClienteForm extends javax.swing.JFrame {
         jLabel1.setText("Nome:");
 
         listArquivos.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "lista vazia" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -144,7 +146,7 @@ public class ClienteForm extends javax.swing.JFrame {
     private void btnListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListActionPerformed
         // Preencher a lista de arquivos existentes
         try{
-            Socket client = new Socket("localhost",20000);
+            Socket client = new Socket("localhost", 9000);
             client.setKeepAlive(true);
             ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
             
@@ -162,11 +164,11 @@ public class ClienteForm extends javax.swing.JFrame {
     private void btnReadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReadActionPerformed
         // Exibe conteudo de arquivo
          try{
-            Socket cli = new Socket("localhost",20000);
+            Socket cli = new Socket("localhost",9000);
             cli.setKeepAlive(true);
             ObjectOutputStream output = new ObjectOutputStream(cli.getOutputStream());
             
-           String nome_arq = txtNomeArquivo.getText();           
+           String nome_arq = (String)listArquivos.getSelectedValue();  //pega o item selecionado da lista //txtNomeArquivo.getText();           
            
             Requisicao req = new Requisicao();
             req.set_message_content(Requisicao.PEGA_ARQUIVO);
@@ -199,6 +201,8 @@ public class ClienteForm extends javax.swing.JFrame {
 
     private void btnWriteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWriteActionPerformed
         // Sobrescreve ou atualiza conteudo de um arquivo
+        
+        
     }//GEN-LAST:event_btnWriteActionPerformed
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
@@ -206,7 +210,7 @@ public class ClienteForm extends javax.swing.JFrame {
        
         try {
             Socket client;
-            client = new Socket("localhost", 20000);
+            client = new Socket("localhost", 9000);
             client.setKeepAlive(true);
             ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
             
@@ -224,8 +228,10 @@ public class ClienteForm extends javax.swing.JFrame {
             
             JOptionPane.showMessageDialog(this, "..Message Received");
             if (rep.get_message_content()== Resposta.ARQUIVO_ESCRITO_COM_SUCESSO){
-                JOptionPane.showMessageDialog(this,"Arquivo Criado com sucesso!");
-                listArquivos.add(txtNomeArquivo.getText(), null);                  //arquivo item na lista
+                JOptionPane.showMessageDialog(this,"Arquivo Criado com sucesso!");            
+                model.addElement(txtNomeArquivo.getText());         //add no modelo
+                listArquivos.setModel(model);                       //atualiza lista
+                
             }
             else{
                 JOptionPane.showMessageDialog(this, "Tentativa Fail de criação...");
