@@ -3,8 +3,10 @@ import java.io.Serializable;
 
 public class Requisicao implements Serializable {
 	
-	public static final int NOVO_ARQUIVO = 0;
-	public static final int PEGA_ARQUIVO = 1;
+	public static final int NOVO_ARQUIVO  = 0;
+	public static final int PEGA_ARQUIVO  = 1;
+	public static final int LISTA_ARQUIVO = 2;
+        public static final int MUDA_ARQUIVO = 3;
 	
 	private String _conteudo;
 	private String _nome_arquivo;

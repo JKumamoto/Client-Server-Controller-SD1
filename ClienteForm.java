@@ -152,7 +152,30 @@ public class ClienteForm extends javax.swing.JFrame {
             
             ArrayList<String> arq_nomes = new ArrayList();
             
-            //nao feito ainda..............
+           Requisicao req = new Requisicao();
+           req.set_message_content(Requisicao.LISTA_ARQUIVO);         
+            
+           output.writeObject(req);
+            
+            ObjectInputStream input = new ObjectInputStream(client.getInputStream());
+            Resposta rep = (Resposta)input.readObject();
+            if (rep.get_message_content()== Resposta.ARQUIVO_NAO_ENCONTRADO){
+                JOptionPane.showMessageDialog(this,"File not found");
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Encontrado!!!");
+               
+                arq_nomes = rep.get_files();    //pega o arraylist de strings
+                model.clear();                  //limpa o modelo de lista de itens
+                for(String x: arq_nomes){
+                    model.addElement(x);            //percorre o array e add no molde ou modelo da lista
+                }              
+                listArquivos.setModel(model);                       //atualiza lista com o modelo
+            }
+            
+            output.close();
+            input.close();
+            client.close();
             
             
         }catch(Exception ex){
@@ -200,8 +223,44 @@ public class ClienteForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnReadActionPerformed
 
     private void btnWriteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWriteActionPerformed
-        // Sobrescreve ou atualiza conteudo de um arquivo
-        
+        // Sobrescreve ou atualiza conteudo de um arquivo                      
+        try {
+            Socket client;
+            client = new Socket("localhost", 9000);
+            client.setKeepAlive(true);
+            ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
+            
+            String nome_arq = (String)listArquivos.getSelectedValue();  //pega o item selecionado da lista
+            
+            Requisicao req = new Requisicao();
+            req.set_conteudo(txtConteudo.getText());           
+            req.set_nome_arquivo(nome_arq);
+            
+            req.set_message_content(Requisicao.MUDA_ARQUIVO);        //msg de pegar arquivo existente
+            
+           output.writeObject(req);
+           JOptionPane.showMessageDialog(this, "Sending message..");
+           
+            ObjectInputStream  input  = new ObjectInputStream(client.getInputStream());
+            Resposta rep = (Resposta)input.readObject();
+            
+            JOptionPane.showMessageDialog(this, "..Message Received");
+            System.out.println("Saida da resposta do Write"+rep.get_message_content());
+            if (rep.get_message_content()== Resposta.ARQUIVO_ENCONTRADO){
+                JOptionPane.showMessageDialog(this,"Arquivo Modificado com sucesso!");                      
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Tentativa Fail de modificação...");
+            }
+            output.close();
+            input.close();
+            client.close();
+            
+        } catch (Exception ex) {
+           ex.printStackTrace();
+        }
+            
+        txtConteudo.setText("");       
         
     }//GEN-LAST:event_btnWriteActionPerformed
 

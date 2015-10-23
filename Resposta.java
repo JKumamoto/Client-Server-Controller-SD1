@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 
 
 
@@ -9,9 +10,10 @@ public class Resposta implements Serializable{
 	public static final int ARQUIVO_ESCRITO_COM_SUCESSO = 2;
 	public static final int ARQUIVO_NAO_ESCRITO = -2;
 	
-	private String _arquivo;
-	private String _nome_arquivo;
-	private int    _message_content;
+	private String 			  _arquivo;
+	private ArrayList<String> _files;
+	private String            _nome_arquivo;
+	private int               _message_content;
 	
         public Resposta(){
             
@@ -26,6 +28,15 @@ public class Resposta implements Serializable{
 	public String get_arquivo() {
 		return _arquivo;
 	}
+	public void set_files(ArrayList<String> _files)
+	{
+		this._files = _files;
+	}
+	
+	public ArrayList<String> get_files() {
+		return _files;
+	}
+
 	public void set_arquivo(String _arquivo) {
 		this._arquivo = _arquivo;
 	}
