@@ -152,7 +152,7 @@ public class ClienteForm extends javax.swing.JFrame {
 		// Preencher a lista de arquivos existentes
 		try{
 			//Inicia o rmi, o servidor devolve uma resposta a partir da requisiçao
-			Server_Interface server=(Server_Interface)Naming.lookup("rmi://localhost/Servidor");
+			Server_Interface server=(Server_Interface)Naming.lookup("rmi://localhost/Controller");
 			ArrayList<String> arq_nomes = new ArrayList();
 			Requisicao req = new Requisicao();
 			req.set_message_content(Requisicao.LISTA_ARQUIVO);
@@ -177,7 +177,7 @@ public class ClienteForm extends javax.swing.JFrame {
 	private void btnReadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReadActionPerformed
 		// Exibe conteudo de arquivo
 		 try{
-		 	Server_Interface server=(Server_Interface)Naming.lookup("rmi://localhost/Servidor");
+		 	Server_Interface server=(Server_Interface)Naming.lookup("rmi://localhost/Controller");
 			
 			String nome_arq = (String)listArquivos.getSelectedValue();  //pega o item selecionado da lista 
 			//txtNomeArquivo.getText();
@@ -202,7 +202,7 @@ public class ClienteForm extends javax.swing.JFrame {
 	private void btnWriteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWriteActionPerformed
 		// Sobrescreve ou atualiza conteudo de um arquivo                      
 		try {
-			Server_Interface server = (Server_Interface)Naming.lookup("rmi://localhost/Servidor");
+			Server_Interface server = (Server_Interface)Naming.lookup("rmi://localhost/Controller");
 			String nome_arq = (String)listArquivos.getSelectedValue();  //pega o item selecionado da lista
 			
 			Requisicao req = new Requisicao();
@@ -233,7 +233,7 @@ public class ClienteForm extends javax.swing.JFrame {
 	private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
 		// Add novo arquivo para algum servidor
 		try {
-			Server_Interface server = (Server_Interface)Naming.lookup("rmi://localhost/Servidor");
+			Server_Interface server = (Server_Interface)Naming.lookup("rmi://localhost/Controller");
 			
 			Requisicao req = new Requisicao();
 			req.set_conteudo(txtConteudo.getText());

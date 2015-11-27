@@ -55,13 +55,39 @@ public class Server_Implementacao extends UnicastRemoteObject implements Server_
 
 	public Resposta Lista_arquivo(Requisicao req) throws RemoteException{
 		Resposta rep=new Resposta();
-		File f=new File("/");
-		String[] files=f.list();
-		ArrayList<String> st=new ArrayList<String>(files.length);
-		Collections.addAll(st, files);
-		rep.set_message_content(Resposta.ARQUIVO_ENCONTRADO);
-		rep.set_files(st);
+		try{
+			String workingDirectory = System.getProperty("user.dir");
+			String absoluteFilePath = workingDirectory + File.separator;
+			File f=new File(absoluteFilePath);
+			String[] files=f.list();
+			ArrayList<String> st=new ArrayList<String>(files.length);
+			Collections.addAll(st, files);
+			rep.set_message_content(Resposta.ARQUIVO_ENCONTRADO);
+			rep.set_files(st);
+		}catch(Exception e){
+			rep.set_message_content(Resposta.ARQUIVO_NAO_ENCONTRADO);
+		}
 		return rep;
 	}
+
+    public Resposta Muda_arquivo(Requisicao req) throws RemoteException{
+	Resposta rep=new Resposta();
+	try{
+	    File f=new File(req.get_nome_arquivo()+".txt");
+	    if(f.exists()){
+		FileWriter fw=new FileWriter(f);
+		fw.write(req.get_conteudo());
+		fw.close();
+		rep.set_message_content(Resposta.ARQUIVO_ESCRITO_COM_SUCESSO);	    
+	    }else
+		rep.set_message_content(Resposta.ARQUIVO_NAO_ENCONTRADO);
+	}catch(FileNotFoundException e){
+	    rep.set_message_content(Resposta.ARQUIVO_NAO_ENCONTRADO);
+	}catch(IOException e){
+	    System.out.println("Erro Interno");
+	    rep.set_message_content(Resposta.ARQUIVO_NAO_ENCONTRADO);
+	}
+	return rep;
+    }
 	
 }
